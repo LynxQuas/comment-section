@@ -2,12 +2,22 @@
 import plus from "../assets/images/icon-plus.svg";
 import minus from "../assets/images/icon-minus.svg";
 
-const Scores = ({ score }) => {
+const Scores = ({ score, onAddScore, onMinusScore, className }) => {
     return (
-        <div className="flex items-center gap-3 p-2 bg-[#eaecf1] rounded-md">
-            <img src={plus} alt="plus" />
+        <div className={className}>
+            <img
+                src={plus}
+                alt="plus"
+                onClick={onAddScore}
+                className="cursor-pointer"
+            />
             <span className="font-bold">{score}</span>
-            <img src={minus} alt="minus" />
+            <img
+                src={minus}
+                alt="minus"
+                onClick={onMinusScore}
+                className="cursor-pointer"
+            />
         </div>
     );
 };

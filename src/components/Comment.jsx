@@ -2,66 +2,95 @@
 import User from "./User";
 import CommentContent from "./CommentContent";
 import CommentAction from "./CommentAction";
-import ReplyContainer from "../ui/ReplyContainer";
 import { useState } from "react";
 import CommentBox from "./CommentBox";
+import Replies from "./Replies";
+import Scores from "../ui/Scores";
+
+import { useComment } from "../store/CommentContext";
+import Model from "../ui/Model";
 
 const Comment = ({ comment }) => {
+    const { dispatch } = useComment();
     const [replyingOnComment, setReplyingOnComment] = useState(false);
-    const [replyingOnReplies, setReplyingOnReplies] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [score, setScore] = useState(comment.score);
+    const [openModel, setOpenModel] = useState(false);
+
+    const openModelHandler = () => {
+        setOpenModel(true);
+    };
+
+    const deleteCommentHandler = () => {
+        dispatch({ type: "comment/delete", payload: { id: comment.id } });
+    };
+
+    const addScoreHandler = () => {
+        setScore((prev) => prev + 1);
+    };
+
+    const minuScoreHandler = () => {
+        setScore((prev) => prev - 1);
+    };
 
     const replyOnCommentHandler = () => {
         setReplyingOnComment((prev) => !prev);
     };
 
-    const replyOnRepliesHandler = (username) => {
-        const replies = comment.replies.find(
-            (reply) => reply?.user?.username === username
-        );
-
-        setReplyingOnReplies(replies);
-    };
-
     return (
         <>
-            <div className="bg-white p-5 flex flex-col gap-4 m-4 rounded-md">
-                <User user={comment.user} createdAt={comment.createdAt} />
-                <CommentContent content={comment.content} />
+            {openModel && (
+                <Model
+                    onDelete={deleteCommentHandler}
+                    onCancel={openModelHandler}
+                />
+            )}
+            <div className="bg-white p-5 flex md:gap-2 flex-col m-4 rounde w-full d-md md:flex-row md:justify-between">
+                <Scores
+                    score={score}
+                    onAddScore={addScoreHandler}
+                    onMinusScore={minuScoreHandler}
+                    className="md:flex items-center gap-3 p-2 bg-[#eaecf1] rounded-md min-w-14 md:flex-col md:gap-5 justify-center md:mr-6 hidden"
+                />
+                <div className="md:flex md:flex-col md:gap-4 flex-grow">
+                    <User
+                        user={comment.user}
+                        createdAt={comment.createdAt}
+                        onReply={replyOnCommentHandler}
+                        onEdit={setIsEditing}
+                        onDelete={openModelHandler}
+                    />
+                    <CommentContent content={comment.content} />
+                </div>
                 <CommentAction
-                    score={comment.score}
+                    score={score}
                     user={comment.user}
+                    id={comment.id}
+                    onAddScore={addScoreHandler}
+                    onMinusScore={minuScoreHandler}
+                    onEdit={setIsEditing}
                     onReply={replyOnCommentHandler}
                 />
             </div>
             {replyingOnComment && (
-                <CommentBox replyTo={comment.user.username} />
+                <CommentBox
+                    replyTo={comment.user.username}
+                    commentId={comment.commentId}
+                    onReply={setReplyingOnComment}
+                    onEdit={setIsEditing}
+                />
             )}
 
-            {comment.replies.length > 0 && (
-                <ReplyContainer>
-                    {comment.replies.map((reply) => (
-                        <div key={reply.id}>
-                            <div className="bg-white p-5 flex flex-col gap-4 m-4 rounded-md">
-                                <User
-                                    user={reply.user}
-                                    createdAt={reply.createdAt}
-                                />
-                                <CommentContent content={reply.content} />
-                                <CommentAction
-                                    score={reply.score}
-                                    user={reply.user}
-                                    onReply={(username) =>
-                                        replyOnRepliesHandler(username)
-                                    }
-                                />
-                            </div>
+            {isEditing && (
+                <CommentBox
+                    comment={comment}
+                    onEdit={setIsEditing}
+                    isEditing={isEditing}
+                />
+            )}
 
-                            {replyingOnReplies && (
-                                <CommentBox replyTo={reply.user.username} />
-                            )}
-                        </div>
-                    ))}
-                </ReplyContainer>
+            {comment.replies?.length > 0 && (
+                <Replies replies={comment.replies} />
             )}
         </>
     );

@@ -1,14 +1,14 @@
 import CommentBox from "./components/CommentBox";
-import Comment from "./components/Comments";
+import Comments from "./components/Comments";
 import CommentContextProvider from "./store/CommentContext";
 const App = () => {
     return (
-        <>
-            <CommentContextProvider>
-                <Comment />
+        <CommentContextProvider>
+            <div className="md:w-2/3 md:mx-auto md:p-10">
+                <Comments />
                 <CommentBox />
-            </CommentContextProvider>
-        </>
+            </div>
+        </CommentContextProvider>
     );
 };
 
