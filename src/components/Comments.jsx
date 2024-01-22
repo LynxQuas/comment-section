@@ -5,7 +5,7 @@ const Comments = () => {
     const { comments } = useComment();
 
     return (
-        <div>
+        <section>
             {comments.map((comment) => (
                 <Comment
                     key={comment.id}
@@ -13,7 +13,7 @@ const Comments = () => {
                     replies={comment.replies}
                 />
             ))}
-        </div>
+        </section>
     );
 };
 

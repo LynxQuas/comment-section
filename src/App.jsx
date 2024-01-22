@@ -4,10 +4,10 @@ import CommentContextProvider from "./store/CommentContext";
 const App = () => {
     return (
         <CommentContextProvider>
-            <div className="md:w-2/3 md:mx-auto md:p-10">
+            <main className="md:w-2/3 md:mx-auto md:p-10">
                 <Comments />
                 <CommentBox />
-            </div>
+            </main>
         </CommentContextProvider>
     );
 };

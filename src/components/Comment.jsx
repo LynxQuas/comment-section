@@ -45,7 +45,7 @@ const Comment = ({ comment }) => {
                     onCancel={openModelHandler}
                 />
             )}
-            <div className="bg-white p-5 flex md:gap-2 flex-col m-4 rounde w-full d-md md:flex-row md:justify-between">
+            <section className="bg-white p-5 flex md:gap-2 flex-col m-4 rounde w-full d-md md:flex-row md:justify-between">
                 <Scores
                     score={score}
                     onAddScore={addScoreHandler}
@@ -71,7 +71,7 @@ const Comment = ({ comment }) => {
                     onEdit={setIsEditing}
                     onReply={replyOnCommentHandler}
                 />
-            </div>
+            </section>
             {replyingOnComment && (
                 <CommentBox
                     replyTo={comment.user.username}
